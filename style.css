@@ -29,6 +29,10 @@ header {
   z-index: 1000;
 }
 
+header a {
+  text-decoration: none;
+}
+
 header h1 {
   font-size: 1.4rem;
   font-weight: 600;
@@ -121,6 +125,22 @@ main {
   margin: 0 12px 12px;
 }
 
+.view-recipe {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: white;
+  background-color: #ff6b3d;
+  margin: 5px 10px ; 
+}
+
+.view-recipe:hover {
+  background-color: #ff855d;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+
 footer {
   position: fixed;
   bottom: 0;
@@ -178,5 +198,96 @@ footer a:hover {
 
   .recipe p {
     font-size: 0.8rem;
+  }
+}
+
+
+.viewed-recipes {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px 70px;
+}
+
+.viewed-recipe {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+.viewed-recipe img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 18px;
+}
+
+.viewed-recipe h3 {
+  font-size: 1.6rem;
+  color: #333;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.viewed-recipe p {
+  color: #555;
+  line-height: 1.6;
+  margin: 10px 0;
+  font-size: 0.95rem;
+}
+
+.viewed-recipe h4 {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #ff6b3d;
+  border-bottom: 2px solid #ff6b3d30;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.viewed-recipe ul {
+  list-style-type: disc;
+  margin: 12px 0 20px 25px;
+  color: #444;
+}
+
+.viewed-recipe li {
+  margin-bottom: 6px;
+  font-size: 0.92rem;
+}
+
+.viewed-recipes iframe {
+  border-radius: 12px;
+  margin-top: 20px;
+  width: 100%;
+  height: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 700px) {
+  .viewed-recipes {
+    padding: 50px 15px 70px;
+  }
+
+  .viewed-recipe img {
+    height: 200px;
+  }
+
+  .viewed-recipe h3 {
+    font-size: 1.2rem;
+  }
+
+  .viewed-recipe p {
+    font-size: 0.88rem;
+  }
+
+  .viewed-recipe li {
+    font-size: 0.85rem;
+  }
+
+  .viewed-recipes iframe {
+    height: 220px;
   }
 }

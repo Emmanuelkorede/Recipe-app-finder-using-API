@@ -1,93 +1,107 @@
 const recipeInput = document.getElementById('recipe-input');
-const recipesContainer = document.getElementById('recipes');
+const recipeContainer = document.getElementById('recipes');
+const searchButton = document.getElementById('search-btn');
 
-let isLoading = false;
+recipeContainer.addEventListener('click', (e) => {
+  if(e.target.classList.contains('view-recipe')) {
+    const id = e.target.dataset.id ;
+     window.location.href = `viewRecipie.html?id=${id}`;
+  }
+}) ;
 
-async function loadRandomRecipes(count = 10) {
-  if (recipesContainer.innerHTML.trim() === '') {
-    recipesContainer.innerHTML = '<p>Loading recipes...</p>';
+async function loadRandomRecipe(count = 12 , append = false) {
+  if (!append && recipeContainer.innerHTML.trim() === '') {
+    recipeContainer.innerHTML = '<p>Loading recipes...</p>';
   }
 
-  let recipeHtml = '';
-  isLoading = true;
+  const requests = [];
 
   for (let i = 0; i < count; i++) {
-    const res = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
-    const data = await res.json();
-    const meal = data.meals[0];
+    requests.push(fetch('https://www.themealdb.com/api/json/v1/1/random.php'));
+  }
 
+  const responses = await Promise.all(requests);
+  const dataPromises = responses.map(res => res.json());
+  const dataArray = await Promise.all(dataPromises);
+
+  let recipeHtml = '';
+
+  dataArray.forEach((data) => {
+    const meal = data.meals[0];
     recipeHtml += `
-      <div class="recipe">
+       <div class="recipe">
         <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
         <h3>${meal.strMeal}</h3>
         <p>${meal.strArea} • ${meal.strCategory}</p>
+        <button class="view-recipe" data-id="${meal.idMeal}">View</button>
       </div>
     `;
-  }
+  });
 
-  recipesContainer.innerHTML = recipeHtml; 
-  isLoading = false;
+  if(append) {
+      recipeContainer.innerHTML += recipeHtml;
+  } else {
+    recipeContainer.innerHTML = recipeHtml ;
+  }
 }
 
+let isLoading = false ;
+window.addEventListener('scroll' , () => {
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+    isLoading = true ;
+    loadRandomRecipe(12, true).then(() => {
+      isLoading = false
+    })
+  }
+})
 
-window.addEventListener('scroll', () => {
-  if (
-    window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-    !isLoading
-  ) {
-    loadRandomRecipes(10);
+searchButton.addEventListener('click', () => {
+  const name = recipeInput.value.trim();
+  if (name) {
+    searchRecipes(name);
   }
 });
 
-let timeoutId;
+let timeoutID;
 recipeInput.addEventListener('input', () => {
-  const title = recipeInput.value.trim();
-  clearTimeout(timeoutId);
+  const name = recipeInput.value.trim();
+  clearTimeout(timeoutID);
 
-  
-  if (!title) {
-    recipesContainer.innerHTML = '';
-    loadRandomRecipes(); // reload random recipes
+  if (!name) {
+    recipeContainer.innerHTML = '<p>Please enter a recipe name.</p>';
     return;
-}
+  }
 
-
-  timeoutId = setTimeout(() => searchRecipe(title), 500);
+  timeoutID = setTimeout(() => searchRecipes(name), 500);
 });
 
-async function searchRecipe(title) {
-  recipesContainer.innerHTML = '<p>Searching...</p>';
+async function searchRecipes(name) {
+  recipeContainer.innerHTML = '<p>Searching...</p>';
   try {
-    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${title}`);
+    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
     const data = await response.json();
 
     if (!data.meals) {
-      recipesContainer.innerHTML = '<p>No recipe found</p>';
+      recipeContainer.innerHTML = '<p>No recipes found.</p>';
       return;
     }
 
-    recipesContainer.innerHTML = data.meals
-      .map(
-        food => `
-        <div class="recipe">
-          <img src="${food.strMealThumb}" alt="${food.strMeal}">
-          <h3>${food.strMeal}</h3>
-          <p>${food.strArea} • ${food.strCategory}</p>
-        </div>`
-      )
-      .join('');
+    recipeContainer.innerHTML = data.meals.map(recipe =>
+      `
+      <div class="recipe">
+        <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}">
+        <h3>${recipe.strMeal}</h3>
+        <p>${recipe.strArea} • ${recipe.strCategory}</p>
+        <button class="view-recipe" data-id="${recipe.idMeal}">View</button>
+      </div>`
+    ).join('');
+
   } catch (error) {
-    recipesContainer.innerHTML = '<p>Something went wrong, please try again later</p>';
+    recipeContainer.innerHTML = '<p>An error occurred. Please try again later.</p>';
   }
 }
 
-loadRandomRecipes();
+loadRandomRecipe();
 
 
-// logo 
-      const logo = document.getElementById("logo");
-      function adjustTitle() {
-        logo.textContent = window.innerWidth <= 600 ? "🍽️ RAP" : "🍽️ Recipe App Finder";
-      }
-      adjustTitle();
-      window.addEventListener("resize", adjustTitle);
+    
