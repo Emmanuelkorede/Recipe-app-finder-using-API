@@ -1,6 +1,7 @@
 # 🍽️ Recipe App Finder (RAP)
 
 A simple, modern, and mobile-friendly recipe search web app that lets you **discover random recipes** or **search specific dishes** using [TheMealDB API](https://www.themealdb.com/).  
+**view life** [https://emmanuelkorede.github.io/Recipe-app-finder-using-API/] 
 
 Built with **HTML**, **CSS**, and **JavaScript**.
 
